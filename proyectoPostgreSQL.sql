@@ -124,3 +124,35 @@ CREATE TABLE Reparto (
     FOREIGN KEY (id_pelicula) REFERENCES Pelicula(id_pelicula),
     FOREIGN KEY (dni) REFERENCES Persona(dni)
 );
+
+-- Despues tendriamos que preguntarle a los profes que cosas tendriamos que ver con cascade, set null y esas cosas . Y tambien en la parte de que los codigos deben ser generdos automaticamente lo tenesmos que hacer con un tigger o le podemos poner el tipo serial a esos atributos. Y tambien preguntar sobre la cant_pelicula como se hace un atriuto calculado
+
+--Consideraciones Adicionales
+
+    Cascade y Set Null: Debes decidir si quieres usar ON DELETE CASCADE o ON DELETE SET NULL en tus claves foráneas, dependiendo de cómo deseas manejar la eliminación de registros relacionados. Esto puede discutirse con tus profesores para obtener una guía más específica.
+
+    Generación Automática de Códigos: Para la generación automática de códigos, puedes usar el tipo de datos SERIAL o BIGSERIAL. Alternativamente, puedes crear un trigger para manejar esta funcionalidad. Usar SERIAL es generalmente más sencillo y directo.
+
+    Atributos Calculados: Para cant_pelicula como un atributo calculado (por ejemplo, el número de películas en las que una persona ha participado), puedes usar una vista o una columna generada (GENERATED ALWAYS AS).
+    
+    -- Claves foráneas con CASCADE
+ALTER TABLE sala
+ADD CONSTRAINT fkcine FOREIGN KEY (nombre_cine) REFERENCES cine (nombre_cine) ON DELETE CASCADE;
+
+ALTER TABLE funcion
+ADD CONSTRAINT fkpelicula FOREIGN KEY (id_pelicula) REFERENCES pelicula (id_pelicula) ON DELETE CASCADE;
+
+-- Generación automática de IDs usando SERIAL
+CREATE TABLE persona (
+    dni SERIAL PRIMARY KEY,
+    nombre VARCHAR(45),
+    nacionalidad VARCHAR(45),
+    cant_pelicula INTEGER
+);
+
+-- Atributo calculado usando una vista
+CREATE VIEW cant_peliculas_view AS
+SELECT dni, COUNT(*) AS cant_pelicula
+FROM protagonizo
+GROUP BY dni;
+
