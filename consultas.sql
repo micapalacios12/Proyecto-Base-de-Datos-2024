@@ -36,7 +36,7 @@ SELECT DISTINCT persona.dni, persona.nombre
 FROM persona
 INNER JOIN protagonizo ON persona.dni = protagonizo.dni 
 INNER JOIN pelicula ON protagonizo.id_pelicula = pelicula.id_pelicula
-WHERE pelicula.genero = "suspenso";
+WHERE pelicula.genero = "Terror";
 
 -- 4) Películas cuya duración sea mayor que el promedio de duración de todas las películas:
 
