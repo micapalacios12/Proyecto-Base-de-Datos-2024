@@ -42,7 +42,6 @@ public class Main {
     }
 
     private static void insertarCineDesdeConsola(Connection conn, Scanner scanner) {
-        // Crea un nuevo scanner para evitar problemas con nextLine()
         Scanner scanner1 = new Scanner(System.in);
 
         System.out.println("Introduce el nombre del cine:");
