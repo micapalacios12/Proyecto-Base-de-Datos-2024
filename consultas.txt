@@ -3,9 +3,12 @@ set search_path = cines;
 -- a) Devolver actores que solo figuran en una sola película.
 SELECT persona.dni, persona.nombre
 FROM persona
-INNER JOIN protagonizo ON persona.dni = protagonizo.dni
-GROUP BY persona.dni, persona.nombre
-HAVING COUNT(protagonizo.id_pelicula) = 1;
+WHERE persona.dni IN (
+	SELECT dni
+	FROM (SELECT * FROM protagonizo  UNION SELECT * FROM reparto) AS acturon
+	GROUP BY dni
+	HAVING COUNT (id_pelicula) = 1
+);
 
 -- b) Listar las personas que han sido actores y directores.
 SELECT DISTINCT dni AS actuo_y_dirigio 
@@ -22,8 +25,14 @@ GROUP BY nombre_cine;
 -- 1) Listar las personas que actuaron en mas de dos peliculas
 SELECT DISTINCT actuaron.dni AS actuo_2_o_mas 
 FROM (SELECT * FROM protagonizo  UNION SELECT * FROM reparto) AS actuaron, 
-(SELECT * FROM protagonizo UNION SELECT * FROM reparto) AS actuaron2 
+(SELECT * FROM protagonizo UNION SELECT * FROM reparto) AS actuaron2
 WHERE (actuaron.dni = actuaron2.dni AND actuaron.id_pelicula != actuaron2.id_pelicula);
+
+--Se podria haber hecho con un group by y having, pero queriamos resolverlo con renombramiento y producto cartesiano
+--SELECT dni
+--FROM (SELECT * FROM protagonizo  UNION SELECT * FROM reparto) AS acturon
+--GROUP BY dni
+--HAVING COUNT (id_pelicula) >= 2;
 
 -- 2) Mostrar la pelicula (id_pelicula, titulo_espanol) mas larga 
 SELECT p.id_pelicula, p.titulo_espanol 
@@ -36,7 +45,7 @@ SELECT DISTINCT persona.dni, persona.nombre
 FROM persona
 INNER JOIN protagonizo ON persona.dni = protagonizo.dni 
 INNER JOIN pelicula ON protagonizo.id_pelicula = pelicula.id_pelicula
-WHERE pelicula.genero = "suspenso";
+WHERE pelicula.genero = 'Terror';
 
 -- 4) Películas cuya duración sea mayor que el promedio de duración de todas las películas:
 
@@ -46,3 +55,4 @@ WHERE pelicula.duracion > (
 	SELECT AVG(duracion)
 	FROM pelicula
 );
+

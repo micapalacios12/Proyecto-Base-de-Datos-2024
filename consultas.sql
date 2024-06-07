@@ -1,10 +1,14 @@
 set search_path = cines;
 
 -- a) Devolver actores que solo figuran en una sola película.
-SELECT dni
-FROM (SELECT * FROM protagonizo  UNION SELECT * FROM reparto) AS acturon
-GROUP BY dni
-HAVING COUNT (id_pelicula) = 1;
+SELECT persona.dni, persona.nombre
+FROM persona
+WHERE persona.dni IN (
+	SELECT dni
+	FROM (SELECT * FROM protagonizo  UNION SELECT * FROM reparto) AS acturon
+	GROUP BY dni
+	HAVING COUNT (id_pelicula) = 1
+);
 
 -- b) Listar las personas que han sido actores y directores.
 SELECT DISTINCT dni AS actuo_y_dirigio 
